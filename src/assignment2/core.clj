@@ -153,28 +153,28 @@
 (defn print-history
   [history map-matrix]
   (println "History")
-  ; (println history)
-  ; (println map-matrix)
-  (map-indexed
+  (first (map-indexed
     (fn [y row]
-      ; (println "IN ROW")
+      true
       (println
         (apply str
           (map-indexed
             (fn [x char]
               (if (has-pos history {:x x :y y})
-                "x"
+                "*"
                 char))
             row
-            ))))
+            )))
+      true ; This is to force Clojure to evaluate the entire lot (even though println returns nil)
+      )
     map-matrix
-    ))
+    )))
 
 ; EXPANSION
 
 (defn find-next-steps
   "Returns a sequence of positions to be added to the open list"
-  [pos map-matrix closed-list goal]
+  [pos map-matrix open-list closed-list goal]
   ; goal is an optoinal parameter (nil/false for left out)
   ; If defined, calculate cost to continue
   (map
@@ -194,9 +194,10 @@
           (< nx (count (first map-matrix)))
           (< ny (count map-matrix)))
 
-          (if-not (has-pos closed-list {:x nx :y ny})
-            ; (do
-            ;   (println "not has")
+          (if-not
+            (or
+              (has-pos closed-list {:x nx :y ny})
+              (has-pos open-list {:x nx :y ny}))
             (if-not (= "R" (find-at map-matrix nx ny))
               ; Add to open list
               (let
@@ -219,11 +220,8 @@
                       :est-dist (get-distance potential goal)
                       :heur (+ (:cost potential) (get-distance potential goal))
                     }
-                )))
-          ))))
+                )))))))
     ; List of positions adjacent to this one
-    ; TODO: Generate this rather than specify directly
-    ;       Why? Because I feel like it
     '(
       {:x -1 :y -1}
       {:x -1 :y 0 }
@@ -263,7 +261,7 @@
                 ))))
         %)
       (conj
-        (find-next-steps pos map-matrix closed-list goal)
+        (find-next-steps pos map-matrix open-list closed-list goal)
         (rest open-list)))
         ))
 
@@ -281,7 +279,7 @@
         (conj % %2)
         %)
       (conj
-        (find-next-steps pos map-matrix closed-list nil)
+        (find-next-steps pos map-matrix open-list closed-list nil)
         (rest open-list)))
         ))
 
@@ -289,6 +287,8 @@
 
 (defn run
   [map-key expander cont-prnt]
+  (if cont-prnt ; Print state header if states are to be printed
+    (println "Expanded States:"))
   (let
     [
       map-mat (load-map map-key)
@@ -299,9 +299,8 @@
       [
         open-list (give-start-list start-pos)
         closed-list '()
+        states-evaled 1
       ]
-      ; (println "open list " open-list)
-      ; (println "closed list " closed-list)
       (if (= 0 (count open-list))
         (do
           (println "Unable to find a path")
@@ -319,10 +318,13 @@
                   goal-pos
                   )
                 (conj closed-list (first open-list))
+                (inc states-evaled)
                 )
             (do ; Finish up
+              (println "Total States Evaluated: " states-evaled)
+              (println "Number of Steps in Path: " (:depth (first open-list)))
+              (println "Path Length: " (:cost (first open-list)))
               (print-history (:history (first open-list)) map-mat)
-              true
             ))))
       ))
   )
