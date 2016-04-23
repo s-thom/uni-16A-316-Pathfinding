@@ -19,6 +19,7 @@
   ; Some extra maps I used for testing
   :316 "map-316"
   :impossible "map-impossible"
+  :impossible2 "map-impossible2"
   :empty "map-empty"
   })
 
