@@ -1,0 +1,10 @@
+(expand-astar '(("-" "-" "-")("-" "-" "-")) (give-start-list {:x 0 :y 0}) '() {:x 2 :y 1})
+
+(map reduce-info (expand-astar '(("-" "-" "-")("-" "-" "-")) (give-start-list {:x 0 :y 0}) '() {:x 2 :y 1}))
+
+(pos-of "v" '(("*" "-" "-")("-" "-" "v")("-" "-" "-")))
+(pos-of "v" '(("-" "-" "-")("-" "-" "-")("-" "-" "-")))
+
+
+(astar :scenario :easy :print-states true)
+(dfs :scenario :easy :print-states true)
