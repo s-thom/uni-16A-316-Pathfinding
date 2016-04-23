@@ -90,7 +90,7 @@
     :y (:y item)
     }]
     (if (:heur item)
-      (conj x {:huer (:heur item)})
+      (conj x {:heur (:heur item)})
       x))
   )
 
@@ -152,9 +152,23 @@
 
 (defn print-history
   [history map-matrix]
-  ; TODO: Print history
-  (println "will print history soon")
-  )
+  (println "History")
+  ; (println history)
+  ; (println map-matrix)
+  (map-indexed
+    (fn [y row]
+      ; (println "IN ROW")
+      (println
+        (apply str
+          (map-indexed
+            (fn [x char]
+              (if (has-pos history {:x x :y y})
+                "x"
+                char))
+            row
+            ))))
+    map-matrix
+    ))
 
 ; EXPANSION
 
@@ -308,7 +322,6 @@
                 )
             (do ; Finish up
               (print-history (:history (first open-list)) map-mat)
-
               true
             ))))
       ))
