@@ -16,7 +16,10 @@
   :easy "map-small"
   :medium "map-med"
   :hard "map-large"
+  ; Some extra maps I used for testing
   :316 "map-316"
+  :impossible "map-impossible"
+  :empty "map-empty"
   })
 
 ;  GENERIC UTILITIES
@@ -70,7 +73,7 @@
   (conj pos {
     :history '()
     :cost 0
-    :state 0
+    :depth 0
     }))
 
 (defn give-start-list
@@ -81,11 +84,14 @@
 (defn reduce-info
   "Cuts out a lot of information for readability"
   [item]
-  {
+  (let [x {
     :x (:x item)
     :y (:y item)
-    :pref (:pref item)
-    })
+    }]
+    (if (:heur item)
+      (conj x {:huer (:heur item)})
+      x))
+  )
 
 (defn goal?
   "Predicate to check if current position is goal"
@@ -124,9 +130,6 @@
 
 (defn has-pos
   [list pos]
-  ; (println "has?")
-  ; (println list)
-  ; (println pos)
   (loop
     [
       index 0
@@ -145,6 +148,12 @@
           (recur (inc index))
           ))
       false)))
+
+(defn print-history
+  [history map-matrix]
+  ; TODO: Print history
+  (println "will print history soon")
+  )
 
 ; EXPANSION
 
@@ -180,10 +189,10 @@
                   potential {
                     :x nx
                     :y ny
-                    :state (inc (:state pos))
-                    :cost (get-distance % {:x 0 :y 0})
-                    ; :history (conj (:history pos) pos)
-                    :history '()
+                    :depth (inc (:depth pos))
+                    :cost (+ (get-distance % {:x 0 :y 0}) (:cost pos))
+                    :history (conj (:history pos) (reduce-info pos))
+                    ; :history '()
                   }
                 ]
                 ; Add estimated distance if goal given
@@ -193,7 +202,7 @@
                     potential
                     {
                       :est-dist (get-distance potential goal)
-                      :pref (+ (:cost potential) (get-distance potential goal))
+                      :heur (+ (:cost potential) (get-distance potential goal))
                     }
                 )))
           ))))
@@ -225,8 +234,8 @@
             halves (split-with
               (fn [item]
                 (<
-                  (:pref item)
-                  (:pref %2)))
+                  (:heur item)
+                  (:heur %2)))
               %)
           ]
           (reduce
@@ -283,23 +292,24 @@
           (println "Unable to find a path")
           false
           )
-        (if-not (goal? (first open-list) map-mat)
-          (do ; Go in for another recursion
-            (if cont-prnt
-              (println (reduce-info (first open-list))))
-            (recur
-              (expander
-                map-mat
-                open-list
+        (do
+          (if cont-prnt ; Print state if param specified
+            (println (reduce-info (first open-list))))
+          (if-not (goal? (first open-list) map-mat)
+              (recur  ; Go in for another recursion
+                (expander
+                  map-mat
+                  open-list
+                  (conj closed-list (first open-list))
+                  goal-pos
+                  )
                 (conj closed-list (first open-list))
-                goal-pos
                 )
-              (conj closed-list (first open-list))
-              ))
-          (do ; Finish up
-            (println (first open-list))
-            ; Do finishing stuff
-            )))
+            (do ; Finish up
+              (print-history (:history (first open-list)) map-mat)
+
+              true
+            ))))
       ))
   )
 
@@ -316,12 +326,6 @@
     [args (apply assoc {} params)]
     (run (:scenario args) expand-dfs (:print-states args))
     ))
-
-(defn print-history
-  [history]
-  ; TODO: Print history
-  )
-
 
 ; MISC.
 
