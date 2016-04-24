@@ -1,5 +1,4 @@
 # COMP316 Assignment 2
-Stuart Thomson - swdt1 - 1229521
 
 ---
 

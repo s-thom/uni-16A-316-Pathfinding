@@ -1,5 +1,4 @@
 # COMP316 Assignment 2
-Stuart Thomson - swdt1 - 1229521
 
 ---
 
@@ -40,7 +39,13 @@ I found the Breadth First Search case a little interesting. In the `:hard` scena
 
 ## Program Design
 
-I decided to use a closed list to hold the states that had been expanded instead of modifying the map data itself. I found it much easier to prepend the expanded state to the list than have to modify the matrix of the map and have to deal with the overhead with that. It did mean that I had to check for a state's existence in the closed list, but overall made very little difference to the program.
+The `expand-<algorithm>` functions hold the differences between the algorithms. While DFS and BFS just add to the list, A* requires a bit more calculation. It uses insertion sort to order the open list in the sequence to expand.
+
+`find-next-steps` creates the states around the one being expanded, and, if a goal is given, calculates the heuristic needed for the A* algorithm. This is used by the `expand-<x>` functions to get the states to add to the list. I had to be careful, as the `map` function returned `nil` if the state shouldn't be added.
+
+Everything was run by, well, `run`, which deals with starting, looping, and finishing the program. This function is passed an `expand-<x>` function to use, which determines which algorithm is used.
+
+I decided to use a closed list to hold the states that had been expanded instead of modifying the map data itself. This saved me having to modify the matrix of the map and have to deal with the overhead of that. It did mean that I had to check for a state's existence in the closed list, but overall made very little difference to the program.
 
 However, not modifying the matrix lead to a small challenge when printing the completed map out at the end. Instead of being able to just dump it out, I had to go through each position of the matrix and see if that position was in the closed list.
 
