@@ -21,6 +21,7 @@
   :impossible "map-impossible"
   :impossible2 "map-impossible2"
   :empty "map-empty"
+  :empty2 "map-empty2"
   })
 
 ;  GENERIC UTILITIES
