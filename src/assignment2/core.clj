@@ -283,6 +283,24 @@
         (rest open-list)))
         ))
 
+(defn expand-bfs
+  "Expands according to the Breadth First Search algorithm"
+  [map-matrix open-list closed-list goal]
+  ; Goal parameter is here to keep function signatures the same between this and astar
+  ; Is not used in this function
+  ; Check for goal completion
+  (let [pos (first open-list)]
+    ; This is the interstion function.
+    ; For DFS, insert items to the front
+    (reduce
+      #(if-not (nil? %2)
+        (conj % %2)
+        %)
+      (conj
+        (find-next-steps pos map-matrix open-list closed-list nil)
+        (vec (rest open-list))))
+        ))
+
 ; MAIN FUNCTIONS
 
 (defn run
@@ -303,6 +321,7 @@
       ]
       (if (= 0 (count open-list))
         (do
+          (println "Total States Evaluated: " states-evaled)
           (println "Unable to find a path")
           false
           )
@@ -341,6 +360,13 @@
   (let
     [args (apply assoc {} params)]
     (run (:scenario args) expand-dfs (:print-states args))
+    ))
+
+(defn bfs
+  [& params]
+  (let
+    [args (apply assoc {} params)]
+    (run (:scenario args) expand-bfs (:print-states args))
     ))
 
 ; MISC.
