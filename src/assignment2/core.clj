@@ -17,10 +17,12 @@
   :medium "map-med"
   :hard "map-large"
   ; Some extra maps I used for testing
-  :316 "map-316"
-  :impossible "map-impossible"
+  ; I've kept them in, so feel free to try them out
+  :316 "map-316" ; Middle section of map *sort of* looks like "316"
+  :impossible "map-impossible" ; Three maps that can't be completed
   :impossible2 "map-impossible2"
-  :empty "map-empty"
+  :impossible3 "map-impossible3"
+  :empty "map-empty" ; Two maps that have no obstacles. Try DFS
   :empty2 "map-empty2"
   })
 
