@@ -35,6 +35,8 @@ I did encounter some interesting behavior with DFS, which I've documented in App
 
 A* did the best out of all the algorithms in terms of finding the best path. In all cases it found the shortest path, and with fewer expansions than BFS. In most cases it did need to expand more than Depth First Search, but it makes up for this be choosing the lowest cost path.
 
+There is one problem with my A* implementation. If something is in the open list, it is not added again, even if the new path would be shorter. I attempted to rectify this many times, but each attempt ended with a mess of non-working code that I was not happy with. I would need to check the open list for a state, and if we're using A* compare the heuristics.
+
 I found the Breadth First Search case a little interesting. In the `:hard` scenario it showed that it doesn't take any sort of heuristic into account. It didn't choose the lowest cost path, rather it chose a path with the lowest number of steps. While the lowest cost path had the same number of steps, BFS chose the first solution it encountered. Implementing BFS was trivial, as all I had to do was convert the open list to a vector, which makes `conj` add to the end of the list.
 
 ## Program Design
