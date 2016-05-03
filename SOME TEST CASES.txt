@@ -1,10 +1,16 @@
+; These commands were used during development for testing purposes. They *should*
+; still work, but that's not guaranteed.
+
+; Expand an empty map by one step
 (expand-astar '(("-" "-" "-")("-" "-" "-")) (give-start-list {:x 0 :y 0}) '() {:x 2 :y 1})
 
+; Same as above, but with reduced info
 (map reduce-info (expand-astar '(("-" "-" "-")("-" "-" "-")) (give-start-list {:x 0 :y 0}) '() {:x 2 :y 1}))
 
+; Testing the `pos-of` function
 (pos-of "v" '(("*" "-" "-")("-" "-" "v")("-" "-" "-")))
 (pos-of "v" '(("-" "-" "-")("-" "-" "-")("-" "-" "-")))
 
-
+; Actual working commands, can be used for testing (although I'm sure you have sxcripts for this)
 (astar :scenario :easy :print-states true)
 (dfs :scenario :easy :print-states true)
